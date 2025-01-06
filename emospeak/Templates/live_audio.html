@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech Emotion Recognition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+
+    <style>
+        .audio-history {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .audio-element {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">
+        <h1 style="margin: bottom 1000px;; margin-right: 100%;">SEDS</h1>
+    </div>
+    
+    <div class="wrapper">
+        <h2>Speech Emotion Recognition</h2><br><br>
+        <p>Click the button to start recording your voice.</p><br>
+        <button id="startRecording" class="btn">Start Recording</button>
+        <button id="stopRecording" class="btn" disabled>Stop Recording</button>
+        <p id="emotionResult"></p>
+    </div>
+
+    <div class="audio-history">
+        <!-- Recorded audio elements will be appended here -->
+    </div>
+
+    <script>
+        let audioStream;
+        let mediaRecorder;
+        let audioChunks = [];
+        let audioContext;
+        let analyser;
+
+        // Initialize audio recording
+        async function initRecording() {
+            try {
+                audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioContext = new AudioContext();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+
+                mediaRecorder = new MediaRecorder(audioStream);
+                mediaRecorder.ondataavailable = handleDataAvailable;
+                mediaRecorder.onstop = handleRecordingStop;
+            } catch (error) {
+                console.error("Error accessing microphone:", error);
+            }
+        }
+
+        // Start recording
+        document.getElementById("startRecording").addEventListener("click", () => {
+            initRecording().then(() => {
+                mediaRecorder.start();
+                document.getElementById("startRecording").disabled = true;
+                document.getElementById("stopRecording").disabled = false;
+            });
+        });
+
+        // Stop recording
+        document.getElementById("stopRecording").addEventListener("click", () => {
+            mediaRecorder.stop();
+            document.getElementById("startRecording").disabled = false;
+            document.getElementById("stopRecording").disabled = true;
+        });
+
+        // Handle recorded audio data
+        function handleDataAvailable(event) {
+            if (event.data.size > 0) {
+                audioChunks.push(event.data);
+            }
+        }
+
+        // Process recorded audio when recording stops
+        async function handleRecordingStop() {
+            const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
+            const audioUrl = URL.createObjectURL(audioBlob);
+
+            const audioElement = new Audio(audioUrl);
+            audioElement.controls = true;
+
+            const audioHistoryContainer = document.querySelector(".audio-history");
+            const audioHistoryElement = document.createElement("div");
+            audioHistoryElement.className = "audio-element";
+            audioHistoryElement.appendChild(audioElement);
+            audioHistoryContainer.appendChild(audioHistoryElement);
+
+            // Emotion recognition logic (simplified)
+            const emotionResult = await recognizeEmotion(audioBlob);
+            document.getElementById("emotionResult").textContent = "Emotion: " + emotionResult;
+
+            audioChunks = [];
+            audioStream.getTracks().forEach(track => track.stop());
+        }
+
+        // Simulated emotion recognition (replace with actual ML model)
+        async function recognizeEmotion(audioBlob) {
+            // Simulated delay for processing
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            // Replace this with actual emotion recognition logic using a model
+            const emotions = ["Happy", "Sad", "Angry", "Neutral"];
+            const randomEmotion = emotions[Math.floor(Math.random() * emotions.length)];
+
+            return randomEmotion;
+        }
+    </script>
+</body>
+</html>

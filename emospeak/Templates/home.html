@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Navigation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="wrapper">
+    <div class="logo">
+        <h1 style="height: auto;left: 0px;">SEDS</h1>
+    </div>        
+    <h1>welcome to emospeak</h1><br>
+    <p>Chose how to detect_emotion</p><br>        
+        <!-- Button to navigate to "home" page -->
+        <button type="submit" class="btn"><a href="{{ url_for('home') }}" class="btn">RECORDED AUDIO</a></button>
+        
+        <!-- Button to navigate to "home1" page -->
+        <button type="submit" class="btn"><a href="{{ url_for('home1') }}" class="btn">LIVE AUDIO</a></button>
+    </div>
+</body>
+</html>

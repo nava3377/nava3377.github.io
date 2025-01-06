@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Emotion Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Home.css') }}">
+    
+</head>
+<body>
+    <div class="wrapper">
+        <form method="post" enctype="multipart/form-data" action="{{ url_for('detect_emotion') }}">
+            <h1>Audio Emotion Detection</h1>
+            <div>
+                <label for="audio" style="display: block;
+                margin-bottom: 8px;
+                font-size: 16px;
+                color: #fff;">Upload an audio file:</label>
+                <div class="Uploadfile">
+                    <input type="file" name="audio" accept=".wav" >
+                </div>
+            </div>
+            <button type="submit" class="btn">Detect Emotion</button>
+        </form>
+    </div>
+</body>
+</html>
